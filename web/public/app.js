@@ -7,6 +7,7 @@ const selectedLabel = document.getElementById("selected-slot-label");
 const AUTH_TOKEN = "demo-secret-token";
 
 let selectedSlotId = null;
+let selectedSlot = null;
 
 function showMessage(text, type) {
   messageEl.textContent = text;
@@ -61,6 +62,7 @@ async function loadSlots() {
 
 function selectSlot(slot, btn) {
   selectedSlotId = slot.id;
+  selectedSlot = slot;
   document
     .querySelectorAll(".slot.selected")
     .forEach((el) => el.classList.remove("selected"));
@@ -99,11 +101,12 @@ form.addEventListener("submit", async (e) => {
     }
 
     showMessage(
-      `✅ Booked! See you on ${formatDay(data.booking.date)} at ${data.booking.time}, ${data.booking.name}.`,
+      `✅ Booked! See you on ${formatDay(selectedSlot.date)} at ${selectedSlot.time}, ${data.booking.name}.`,
       "success"
     );
     form.reset();
     selectedSlotId = null;
+    selectedSlot = null;
     selectedLabel.textContent = "none";
     loadSlots();
   } catch (err) {
