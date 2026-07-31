@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "Dev_bucket" {
-  bucket        = "dev-bucket-${var.bucket_prefix}-1997"
+  bucket        = "dev-bucket-${var.bucket_prefix}-1998"
   force_destroy = true
 
   tags = {
@@ -77,6 +77,18 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     origin_id                = local.s3_origin_id
   }
 
+  origin {
+    domain_name = replace(aws_apigatewayv2_api.rest_http_api.api_endpoint, "https://", "")
+    origin_id   = "api_gateway_origin"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Some comment"
@@ -89,6 +101,48 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
     forwarded_values {
       query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/slots"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "api_gateway_origin"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["Authorization"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/bookings"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "api_gateway_origin"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["Authorization"]
 
       cookies {
         forward = "none"

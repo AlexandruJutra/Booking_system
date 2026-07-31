@@ -13,12 +13,10 @@ resource "aws_apigatewayv2_integration" "rest_http_api" {
   api_id           = aws_apigatewayv2_api.rest_http_api.id
   integration_type = "AWS_PROXY"
 
-  connection_type           = "INTERNET"
-  content_handling_strategy = "CONVERT_TO_TEXT"
-  description               = "Lambda function"
-  integration_method        = "POST"
-  integration_uri           = aws_lambda_function.lambda_function_resource.invoke_arn
-  passthrough_behavior      = "WHEN_NO_MATCH"
+  description            = "Lambda function"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.lambda_function_resource.invoke_arn
+  payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "Get_route" {
@@ -34,8 +32,8 @@ resource "aws_apigatewayv2_route" "Post_route" {
 }
 
 resource "aws_apigatewayv2_stage" "API_stage" {
-  api_id = aws_apigatewayv2_api.rest_http_api.id
-  name   = "$default"
+  api_id      = aws_apigatewayv2_api.rest_http_api.id
+  name        = "$default"
   auto_deploy = true
 }
 

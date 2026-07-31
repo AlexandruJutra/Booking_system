@@ -1,6 +1,3 @@
-// lambda function
-
-# IAM role for Lambda execution
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -47,7 +44,12 @@ resource "aws_iam_role_policy" "lambda_permissions" {
           "dynamodb:PutItem",
           "dynamodb:UpdateItem"
         ]
-        Resource = "${aws_dynamodb_table.bookings.arn}:*"
+        Resource = [
+          aws_dynamodb_table.bookings.arn,
+          "${aws_dynamodb_table.bookings.arn}/index/*",
+          aws_dynamodb_table.slots.arn,
+          "${aws_dynamodb_table.slots.arn}/index/*"
+        ]
       }
     ]
   })
@@ -68,12 +70,14 @@ resource "aws_lambda_function" "lambda_function_resource" {
   handler       = "index.handler"
   code_sha256   = data.archive_file.doctor_appointment.output_base64sha256
 
-  runtime = "nodejs24.x"
+  runtime = "nodejs22.x"
 
   environment {
     variables = {
-      ENVIRONMENT = "production"
-      LOG_LEVEL   = "info"
+      ENVIRONMENT    = "production"
+      LOG_LEVEL      = "info"
+      SLOTS_TABLE    = aws_dynamodb_table.slots.name
+      BOOKINGS_TABLE = aws_dynamodb_table.bookings.name
     }
   }
 

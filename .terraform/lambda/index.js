@@ -77,6 +77,46 @@ function isAuthorized(event) {
 
 // --- Route handlers ------------------------------------------------
 
+// Seed 8 slots each day for the upcoming working week (Mon-Fri, 8 per day)
+async function seedDefaultSlots() {
+  const slotsToCreate = [];
+  const today = new Date();
+  
+  // Find the date of the next Monday
+  const daysUntilMonday = (8 - today.getDay()) % 7 || 7;
+  const nextMonday = new Date(today);
+  nextMonday.setDate(today.getDate() + daysUntilMonday);
+
+  const times = [
+    "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
+    "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM"
+  ];
+  for (let dayOffset = 0; dayOffset < 5; dayOffset++) {
+    const slotDate = new Date(nextMonday);
+    slotDate.setDate(nextMonday.getDate() + dayOffset);
+    const dateString = slotDate.toISOString().split("T")[0];
+
+    for (const time of times) {
+      slotsToCreate.push({
+        id: `slot-${dateString}-${time.replace(/[:\s]/g, "-").toLowerCase()}`,
+        date: dateString,
+        time: time,
+        available: true
+      });
+    }
+  }
+
+  for (const slot of slotsToCreate) {
+    await ddb.send(
+      new PutCommand({
+        TableName: SLOTS_TABLE,
+        Item: slot
+      })
+    );
+  }
+  return slotsToCreate;
+}
+
 // GET /slots (public)
 async function getSlots() {
   const result = await ddb.send(
@@ -87,7 +127,14 @@ async function getSlots() {
     })
   );
 
-  const slots = (result.Items || []).sort((a, b) => {
+  let items = result.Items || [];
+
+  // If no slots exist in the database, seed 8 default ones
+  if (items.length === 0) {
+    items = await seedDefaultSlots();
+  }
+
+  const slots = items.sort((a, b) => {
     if (a.date === b.date) return a.time.localeCompare(b.time);
     return a.date.localeCompare(b.date);
   });
@@ -142,7 +189,7 @@ async function createBooking(event) {
   }
 
   const booking = {
-    id: randomUUID(),
+    BookingId: randomUUID(),
     slotId: String(slotId),
     name: String(name),
     email: String(email),

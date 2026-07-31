@@ -10,6 +10,9 @@ jobs:
   destroy:
     name: 'Terraform Destroy'
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      TF_VAR_bucket_prefix: ${{ vars.AWS_BUCKET_NAME }}
 
     defaults:
       run:

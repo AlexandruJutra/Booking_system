@@ -1,6 +1,5 @@
 name: 'CD_workflow'
 
-
 on:
   workflow_dispatch:
 
@@ -14,6 +13,8 @@ jobs:
     outputs:
       s3_dev_bucket_name: ${{ steps.Get_Terraform_Output.outputs.bucket_name }}
     environment: production
+    env:
+      TF_VAR_bucket_prefix: ${{ vars.AWS_BUCKET_NAME }}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -57,7 +58,9 @@ jobs:
 
     - name: Get Terraform Output
       id: Get_Terraform_Output
-      run: echo "bucket_name=$(terraform output -raw s3_dev_bucket_name)" >> $GITHUB_OUTPUT
+      run: |
+        echo "bucket_name=$(terraform output -raw s3_dev_bucket_name)" >> $GITHUB_OUTPUT
+        echo "API:    $(terraform output -raw api_base_url)slots"
 
   deploy:
     needs: terraform
@@ -81,48 +84,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-north-1'
-          SOURCE_DIR: 's3_bucket'
-
-  # terraform:
-  #   name: 'terraform'
-  #   runs-on: ubuntu-latest
-  #   environment: production
-
-  #   # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: .terraform
-
-  #   steps:
-  #   # Checkout the repository to the GitHub Actions runner
-  #   - name: Checkout
-  #     uses: actions/checkout@v4
-
-  #   # Configure AWS Credentials to access S3 backend and resources
-  #   - name: Configure AWS Credentials
-  #     uses: aws-actions/configure-aws-credentials@v4
-  #     with:
-  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       aws-region: eu-north-1
-
-  #   # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-  #   - name: Setup Terraform
-  #     uses: hashicorp/setup-terraform@v3
-
-  #   # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-  #   - name: Terraform Init
-  #     run: terraform init
-
-  #   # Checks that all Terraform configuration files adhere to a canonical format
-  #   - name: Terraform Format
-  #     run: terraform fmt -check
-
-  #   # Generates an execution plan for Terraform
-  #   - name: Terraform Plan
-  #     run: terraform plan -input=false
-
-  #     # On push to "main", build or change infrastructure according to Terraform configuration files
-  #   - name: Terraform_Apply
-  #     run: terraform apply -auto-approve -input=false
+          SOURCE_DIR: 'web/public'
