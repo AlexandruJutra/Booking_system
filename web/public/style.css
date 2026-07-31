@@ -1,0 +1,252 @@
+:root {
+  --primary: #2a7f8e;
+  --primary-dark: #1f5f6b;
+  --accent: #e8f4f6;
+  --text: #1f2933;
+  --muted: #6b7280;
+  --border: #d9e2e4;
+  --danger: #c0392b;
+  --success: #1e8449;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  line-height: 1.6;
+  background: #fbfdfd;
+}
+
+.container {
+  width: min(1000px, 92%);
+  margin: 0 auto;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  padding: 2rem 0 4rem;
+  text-align: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  background: #fff;
+  color: var(--primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-size: 2.6rem;
+  margin: 0.5rem 0;
+}
+
+.subtitle {
+  max-width: 540px;
+  margin: 0 auto 1.5rem;
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.btn-primary {
+  background: #fff;
+  color: var(--primary-dark);
+}
+
+.booking .btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.booking .btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* Features */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin: -2.5rem auto 3rem;
+}
+
+.feature {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 18px rgba(31, 95, 107, 0.06);
+}
+
+.feature h3 {
+  margin-top: 0;
+}
+
+/* Booking */
+.booking {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.booking h2 {
+  margin-top: 0;
+}
+
+.auth-row {
+  background: var(--accent);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-row label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.auth-row small {
+  display: block;
+  color: var(--muted);
+  margin-top: 0.35rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.6rem;
+}
+
+.slot-day {
+  grid-column: 1 / -1;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-top: 0.5rem;
+}
+
+.slot {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.95rem;
+  transition: all 0.12s ease;
+}
+
+.slot:hover {
+  border-color: var(--primary);
+}
+
+.slot.selected {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 0.75rem 0 0.35rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.selected-slot {
+  margin: 1rem 0;
+  color: var(--muted);
+}
+
+.message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: none;
+}
+
+.message.show {
+  display: block;
+}
+
+.message.error {
+  background: #fdecea;
+  color: var(--danger);
+}
+
+.message.success {
+  background: #e6f4ea;
+  color: var(--success);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* Footer */
+footer {
+  background: var(--primary-dark);
+  color: #fff;
+  text-align: center;
+  padding: 1.25rem 0;
+  font-size: 0.9rem;
+}
+
+footer p {
+  margin: 0;
+}

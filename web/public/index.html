@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dr. Miller Family Practice — Book an Appointment</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <div class="brand">
+          <span class="logo">✚</span>
+          <span>Dr. Miller Family Practice</span>
+        </div>
+        <h1>Caring for your whole family</h1>
+        <p class="subtitle">
+          Friendly, personal care for every stage of life. Book your visit
+          online in just a few clicks.
+        </p>
+        <a href="#booking" class="btn btn-primary">Book an appointment</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="features">
+        <div class="feature">
+          <h3>👨‍⚕️ Experienced GP</h3>
+          <p>Over 20 years caring for local families with a personal touch.</p>
+        </div>
+        <div class="feature">
+          <h3>🕒 Flexible hours</h3>
+          <p>Weekday appointments to fit around work and school.</p>
+        </div>
+        <div class="feature">
+          <h3>💙 Whole-family care</h3>
+          <p>From newborn check-ups to senior health, all in one place.</p>
+        </div>
+      </section>
+
+      <section id="booking" class="booking">
+        <h2>Book an appointment</h2>
+
+        <div class="grid">
+          <div>
+            <h3>1. Choose a time slot</h3>
+            <div id="slots" class="slots">
+              <p class="muted">Loading available slots…</p>
+            </div>
+          </div>
+
+          <div>
+            <h3>2. Your details</h3>
+            <form id="booking-form">
+              <label for="name">Full name</label>
+              <input type="text" id="name" required placeholder="Jane Doe" />
+
+              <label for="email">Email address</label>
+              <input
+                type="email"
+                id="email"
+                required
+                placeholder="jane.doe@example.com"
+              />
+
+              <label for="reason">Reason for visit (optional)</label>
+              <textarea
+                id="reason"
+                rows="3"
+                placeholder="e.g. general check-up"
+              ></textarea>
+
+              <p class="selected-slot">
+                Selected slot:
+                <strong id="selected-slot-label">none</strong>
+              </p>
+
+              <button type="submit" class="btn btn-primary">
+                Confirm booking
+              </button>
+            </form>
+            <div id="message" class="message" role="status"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>
+          Dr. Miller Family Practice · 123 Oak Street · Mon–Fri 9:00–17:00 ·
+          (555) 012-3456
+        </p>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
