@@ -250,3 +250,78 @@ footer {
 footer p {
   margin: 0;
 }
+
+/* Auth panel */
+.auth-panel {
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.auth-panel h3 {
+  margin-top: 0;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.auth-tab {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.auth-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.auth-form small {
+  display: block;
+  color: var(--muted);
+  margin: 0.35rem 0 0.75rem;
+}
+
+#signout-btn {
+  background: #fff;
+  color: var(--primary-dark);
+  border: 1px solid var(--border);
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.bookings-table th,
+.bookings-table td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.bookings-table th {
+  color: var(--primary-dark);
+}
+
+.bookings-table tr:hover td {
+  background: var(--accent);
+}
+
+.hidden {
+  display: none !important;
+}
+

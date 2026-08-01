@@ -83,6 +83,81 @@
           </div>
         </div>
       </section>
+
+      <section id="reservations" class="booking">
+        <h2>View reservations</h2>
+        <p class="muted">Staff sign-in is required to view the bookings table.</p>
+
+        <div id="auth" class="auth-panel">
+          <div id="auth-logged-out">
+            <h3>Sign in to view reservations</h3>
+            <div class="auth-tabs">
+              <button type="button" class="auth-tab active" data-tab="signin">
+                Sign in
+              </button>
+              <button type="button" class="auth-tab" data-tab="signup">
+                Create account
+              </button>
+            </div>
+
+            <form id="signin-form" class="auth-form">
+              <label for="signin-email">Email</label>
+              <input type="email" id="signin-email" required autocomplete="email" />
+
+              <label for="signin-password">Password</label>
+              <input
+                type="password"
+                id="signin-password"
+                required
+                autocomplete="current-password"
+              />
+
+              <button type="submit" class="btn btn-primary">Sign in</button>
+            </form>
+
+            <form id="signup-form" class="auth-form hidden">
+              <label for="signup-email">Email</label>
+              <input type="email" id="signup-email" required autocomplete="email" />
+
+              <label for="signup-password">Password</label>
+              <input
+                type="password"
+                id="signup-password"
+                required
+                minlength="8"
+                autocomplete="new-password"
+              />
+              <small>At least 8 characters, with upper &amp; lower case and a number.</small>
+
+              <button type="submit" class="btn btn-primary">Create account</button>
+            </form>
+
+            <form id="confirm-form" class="auth-form hidden">
+              <p class="muted">
+                We emailed you a verification code. Enter it below to activate
+                your account.
+              </p>
+              <label for="confirm-code">Verification code</label>
+              <input type="text" id="confirm-code" inputmode="numeric" required />
+
+              <button type="submit" class="btn btn-primary">Verify</button>
+            </form>
+
+            <div id="auth-message" class="message" role="status"></div>
+          </div>
+
+          <div id="auth-logged-in" class="hidden">
+            <p>Signed in as <strong id="user-email"></strong></p>
+            <button type="button" id="signout-btn" class="btn">Sign out</button>
+          </div>
+        </div>
+
+        <div id="bookings-view" class="hidden">
+          <div id="bookings-list">
+            <p class="muted">Loading reservations…</p>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -94,6 +169,8 @@
       </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+    <script src="auth-config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

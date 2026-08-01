@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       s3_dev_bucket_name: ${{ steps.Get_Terraform_Output.outputs.bucket_name }}
+      cognito_region: ${{ steps.Get_Terraform_Output.outputs.cognito_region }}
+      cognito_user_pool_id: ${{ steps.Get_Terraform_Output.outputs.cognito_user_pool_id }}
+      cognito_client_id: ${{ steps.Get_Terraform_Output.outputs.cognito_client_id }}
     environment: production
     env:
       TF_VAR_bucket_prefix: ${{ vars.AWS_BUCKET_NAME }}
@@ -60,6 +63,9 @@ jobs:
       id: Get_Terraform_Output
       run: |
         echo "bucket_name=$(terraform output -raw s3_dev_bucket_name)" >> $GITHUB_OUTPUT
+        echo "cognito_region=$(terraform output -raw cognito_region)" >> $GITHUB_OUTPUT
+        echo "cognito_user_pool_id=$(terraform output -raw cognito_user_pool_id)" >> $GITHUB_OUTPUT
+        echo "cognito_client_id=$(terraform output -raw cognito_client_id)" >> $GITHUB_OUTPUT
         echo "API:    $(terraform output -raw api_base_url)slots"
 
   deploy:
@@ -68,6 +74,16 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+
+      - name: Generate Cognito auth config
+        run: |
+          cat > web/public/auth-config.js <<EOF
+          window.AUTH_CONFIG = {
+            region: "${{ needs.terraform.outputs.cognito_region }}",
+            userPoolId: "${{ needs.terraform.outputs.cognito_user_pool_id }}",
+            clientId: "${{ needs.terraform.outputs.cognito_client_id }}",
+          };
+          EOF
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4

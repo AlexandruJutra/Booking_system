@@ -31,6 +31,15 @@ resource "aws_apigatewayv2_route" "Post_route" {
   target    = "integrations/${aws_apigatewayv2_integration.rest_http_api.id}"
 }
 
+# Listing existing bookings requires a signed-in (Cognito) user.
+resource "aws_apigatewayv2_route" "Get_bookings_route" {
+  api_id             = aws_apigatewayv2_api.rest_http_api.id
+  route_key          = "GET /bookings"
+  target             = "integrations/${aws_apigatewayv2_integration.rest_http_api.id}"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito.id
+}
+
 resource "aws_apigatewayv2_stage" "API_stage" {
   api_id      = aws_apigatewayv2_api.rest_http_api.id
   name        = "$default"

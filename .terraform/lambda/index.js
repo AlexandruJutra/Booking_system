@@ -19,7 +19,6 @@ const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 const SLOTS_TABLE = process.env.SLOTS_TABLE || "Slots";
 const BOOKINGS_TABLE = process.env.BOOKINGS_TABLE || "Bookings";
-const AUTH_TOKEN = process.env.AUTH_TOKEN || "demo-secret-token";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -70,9 +69,15 @@ function parseBody(event) {
 }
 
 function isAuthorized(event) {
-  const header = getHeader(event, "authorization") || "";
-  const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-  return token !== null && token === AUTH_TOKEN;
+  // POST /bookings is protected by an API Gateway Cognito JWT authorizer, so a
+  // request only reaches this Lambda when a valid ID token was supplied. As a
+  // defence-in-depth check we confirm the authorizer added user claims.
+  return Boolean(getUserClaims(event));
+}
+
+// Cognito claims injected by the API Gateway JWT authorizer.
+function getUserClaims(event) {
+  return event.requestContext?.authorizer?.jwt?.claims || null;
 }
 
 // --- Route handlers ------------------------------------------------
@@ -142,14 +147,8 @@ async function getSlots() {
   return response(200, { slots });
 }
 
-// POST /bookings (requires auth token)
+// POST /bookings (public — anyone can reserve a slot)
 async function createBooking(event) {
-  if (!isAuthorized(event)) {
-    return response(401, {
-      error: "Unauthorized. A valid Bearer token is required.",
-    });
-  }
-
   const body = parseBody(event);
   if (body === null) {
     return response(400, { error: "Request body must be valid JSON." });
@@ -204,6 +203,25 @@ async function createBooking(event) {
   return response(201, { message: "Appointment booked.", booking });
 }
 
+// GET /bookings (requires a signed-in Cognito user)
+async function getBookings(event) {
+  if (!isAuthorized(event)) {
+    return response(401, {
+      error: "Unauthorized. Please sign in to view bookings.",
+    });
+  }
+
+  const result = await ddb.send(
+    new ScanCommand({ TableName: BOOKINGS_TABLE })
+  );
+
+  const bookings = (result.Items || []).sort((a, b) =>
+    String(b.createdAt).localeCompare(String(a.createdAt))
+  );
+
+  return response(200, { bookings });
+}
+
 // --- Entry point ---------------------------------------------------
 
 exports.handler = async (event) => {
@@ -218,6 +236,9 @@ exports.handler = async (event) => {
   try {
     if (method === "GET" && path.endsWith("/slots")) {
       return await getSlots();
+    }
+    if (method === "GET" && path.endsWith("/bookings")) {
+      return await getBookings(event);
     }
     if (method === "POST" && path.endsWith("/bookings")) {
       return await createBooking(event);
